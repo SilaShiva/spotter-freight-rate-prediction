@@ -47,6 +47,10 @@ python -m pip install -r requirements.txt
 python -m src.run_pipeline
 ```
 
+The first run executes the full GridSearchCV and caches the winning
+model to `artifacts/best_single_model.joblib`; subsequent runs reuse
+it and skip stage 5 (delete that file to force a fresh search).
+
 Outputs:
 
 | File | Description |
@@ -54,6 +58,7 @@ Outputs:
 | `data/validation_predictions.csv` | `load_id,predicted_rate` for all 12,000 validation loads |
 | `data/december_chart_inputs.csv`  | the December input file with `predicted_rate` filled (31 rows) |
 | `artifacts/metrics.json`          | held-out metrics, cleaning counts, best params |
+| `artifacts/best_single_model.joblib` | cached GridSearchCV winner (skips stage 5 on re-runs) |
 | `artifacts/cv_results.csv`        | full GridSearchCV results |
 
 Then run the provided scorer:

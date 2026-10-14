@@ -8,7 +8,10 @@ Stages
 2. validation     - profile data-quality issues and clean
 3. split          - out-of-time split (train Jan-Aug, hold out Sep-Oct)
 4. features       - engineering + leakage-safe lane priors
-5. model select   - GridSearchCV (TimeSeriesSplit) over 3 model families
+5. model select   - GridSearchCV (TimeSeriesSplit) over 3 model families,
+                     run once; the winner is cached to
+                     artifacts/best_single_model.joblib and reused on
+                     subsequent runs (delete the file to force a re-search)
 6. ensemble       - fit the 3-model blend (enriched Ridge + 2 HGB) on the
                      training window, evaluate
 7. export         - refit on all development data, write
@@ -24,7 +27,7 @@ import numpy as np
 import pandas as pd
 
 from . import config, evaluate, features, ingestion, ensemble, split
-from .train import run_grid_search
+from .train import load_best, run_grid_search, save_best
 from .validation import clean, profile
 
 
@@ -61,10 +64,18 @@ def main() -> None:
     y_va = va[config.TARGET]
 
     # ---------------------------------------------------------- model select
-    print("[5/7] GridSearchCV over candidate families (TimeSeriesSplit, "
-          "training window only) ...")
-    best, cv_results = run_grid_search(X_tr, y_tr)
-    cv_results.to_csv(config.CV_RESULTS_PATH, index=False)
+    best = load_best()
+    if best is not None:
+        print(f"[5/7] reusing saved best model: {best['name']} "
+              f"(CV MAPE {best['cv_mape']:.4f}) - skipping grid search")
+        cv_results = None
+    else:
+        print("[5/7] GridSearchCV over candidate families (TimeSeriesSplit, "
+              "training window only) ...")
+        best, cv_results = run_grid_search(X_tr, y_tr)
+        save_best(best)
+    if cv_results is not None:
+        cv_results.to_csv(config.CV_RESULTS_PATH, index=False)
     print(f"      best single family: {best['name']} | CV MAPE {best['cv_mape']:.4f}")
 
     # -------------------------------------------------------------- ensemble

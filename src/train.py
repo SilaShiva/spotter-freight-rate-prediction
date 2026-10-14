@@ -25,6 +25,7 @@ is then evaluated once on the held-out window.
 """
 from __future__ import annotations
 
+import joblib
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import HistGradientBoostingRegressor, RandomForestRegressor
@@ -135,3 +136,19 @@ def run_grid_search(X: pd.DataFrame, y: pd.Series, n_jobs: int = -1,
     results = pd.concat(all_rows, ignore_index=True)
     best = min(winners.values(), key=lambda w: w["cv_mape"])
     return best, results
+
+
+def save_best(best: dict) -> None:
+    """Persist the winning model so later runs can skip the grid search."""
+    joblib.dump(
+        {"name": best["name"], "params": best["params"], "cv_mape": best["cv_mape"],
+         "model": best["model"], "one_hot": best["one_hot"]},
+        config.BEST_MODEL_PATH)
+    print(f"saved best model ({best['name']}) to {config.BEST_MODEL_PATH}")
+
+
+def load_best() -> dict | None:
+    """Return the previously found best model, or None if not yet searched."""
+    if not config.BEST_MODEL_PATH.exists():
+        return None
+    return joblib.load(config.BEST_MODEL_PATH)

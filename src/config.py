@@ -24,6 +24,7 @@ VALIDATION_PREDICTIONS_CSV = DATA_DIR / "validation_predictions.csv"
 DECEMBER_PREDICTIONS_CSV = DATA_DIR / "december_chart_inputs.csv"  # completed copy, same name as spec
 
 MODEL_PATH = ARTIFACTS_DIR / "model.joblib"
+BEST_MODEL_PATH = ARTIFACTS_DIR / "best_single_model.joblib"
 METRICS_PATH = ARTIFACTS_DIR / "metrics.json"
 CV_RESULTS_PATH = ARTIFACTS_DIR / "cv_results.csv"
 
