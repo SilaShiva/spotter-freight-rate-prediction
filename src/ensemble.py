@@ -6,7 +6,7 @@ On the held-out Sep-Oct window the single models behave very differently:
 
     Ridge (log)                    ~5.4% MAPE
     HistGradientBoosting (clipped) ~5.5-6.5% MAPE depending on tuning
-    50/50 log-space blend          ~5.2% MAPE
+    50/50 log-space blend          ~5.7% MAPE (vs 7.8% linear baseline)
 
 Ridge is excellent at the smooth market cycle (its market_index coefficient
 transfers cleanly to future months) but cannot express lane/weight

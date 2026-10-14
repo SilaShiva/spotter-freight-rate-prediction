@@ -6,7 +6,7 @@ calendar and market features, then prices every load in the validation set
 (Lexington → Fort Wayne, Dry Van, 360 mi, 32,000 lb, 31 days).
 
 Final model: **Ridge + HistGradientBoosting blend in log space** —
-**5.2 % MAPE** on the out-of-time holdout (Sep–Oct 2025), versus **7.8 %**
+**5.7 % MAPE** on the out-of-time holdout (Sep–Oct 2025), versus **7.8 %**
 for a per-equipment linear baseline.
 
 ## Repository layout
