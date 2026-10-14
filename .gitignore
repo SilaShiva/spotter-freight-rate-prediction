@@ -1,0 +1,12 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# pipeline artifacts (regenerable)
+artifacts/*.joblib
+
+# scratch
+*.log
+.ipynb_checkpoints/
