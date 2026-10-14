@@ -44,7 +44,7 @@ def write_december_predictions(model, december: pd.DataFrame, priors,
     """
     enriched = _enrich_december(december, validation)
     X = transform(enriched, priors)
-    preds = np.round(np.exp(model.predict_log(X)), 2)
+    preds = np.round(model.predict(X, enriched), 2)
     out = december.copy()
     out["predicted_rate"] = preds
     cols = ["pickup", "delivery", "distance", "equipment", "weight", "date",

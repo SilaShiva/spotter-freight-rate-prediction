@@ -121,7 +121,7 @@ def fig_validation_scatter(y_true: pd.Series, y_pred: np.ndarray) -> None:
 
 def fig_model_comparison(metrics: dict) -> None:
     fig, ax = plt.subplots(figsize=(7.4, 3.2), dpi=150)
-    names = ["Per-equipment\nlinear baseline", "Ridge + HGB blend\n(this model)"]
+    names = ["Per-equipment\nlinear baseline", "3-model blend\n(this model)"]
     vals = [metrics["baseline_linear_mape"] * 100, metrics["mape"] * 100]
     bars = ax.barh(names, vals, color=["#9DAFB3", COLOR])
     ax.bar_label(bars, fmt="%.1f%%", padding=4)
@@ -152,7 +152,7 @@ def main() -> None:
         tr, va = split.time_split(cleaned)
         priors = features.fit_priors(tr)
         X_va = features.transform(va, priors)
-        pred = model.predict(X_va)
+        pred = model.predict(X_va, va)
         fig_validation_scatter(va[config.TARGET], pred)
         fig_model_comparison(json.loads(config.METRICS_PATH.read_text()))
     print(f"figures written to {FIG_DIR}")

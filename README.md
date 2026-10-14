@@ -5,9 +5,9 @@ calendar and market features, then prices every load in the validation set
 (12,000 loads, Nov–Dec 2025) and the fixed December chart lane
 (Lexington → Fort Wayne, Dry Van, 360 mi, 32,000 lb, 31 days).
 
-Final model: **Ridge + HistGradientBoosting blend in log space** —
-**5.7 % MAPE** on the out-of-time holdout (Sep–Oct 2025), versus **7.8 %**
-for a per-equipment linear baseline.
+Final model: **3-model blend in log space** (enriched Ridge + two
+HistGradientBoosting variants) — **5.3 % MAPE** on the out-of-time holdout
+(Sep–Oct 2025), versus **7.8 %** for a per-equipment linear baseline.
 
 ## Repository layout
 
@@ -86,9 +86,15 @@ which validates both files and renders `scorer_results/candidate_december.png`.
    reported in `artifacts/cv_results.csv`.
 6. **Validation** — held-out Sep–Oct evaluation, per-equipment and
    per-distance-band residual analysis, linear-baseline comparison.
-7. **Final model** — Ridge and HGB are complementary (linear model nails
-   the smooth market cycle, trees capture lane/weight interactions);
-   their 50/50 geometric-mean blend beats either single model. The blend
-   is refit on all of Jan–Oct before scoring November/December.
+7. **Final model** — a three-way log-space blend, weights 0.6/0.2/0.2:
+   an **enriched Ridge** (per-equipment distance and market slopes, cubic
+   market response, distance hinge terms at ~400 and ~1,500 mi), an
+   **HistGradientBoosting** on the full features, and a second HGB
+   trained without lane priors for a decorrelated third opinion. The
+   linear member nails the smooth market cycle, the trees capture
+   lane/weight interactions, and the blend beats every single model and
+   the previous 2-way blend (5.3 % vs 5.7 %), improving all four
+   distance bands. Refit on all of Jan–Oct before scoring
+   November/December.
 
 See `report/freight-rate-report.pdf` for the full write-up.
